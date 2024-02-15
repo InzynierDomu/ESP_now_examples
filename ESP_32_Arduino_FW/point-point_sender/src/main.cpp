@@ -3,13 +3,11 @@
 #include <esp_now.h>
 
 // REPLACE WITH YOUR RECEIVER MAC Address
-const uint8_t receiver_address[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+const uint8_t receiver_address[] = {0xC8, 0xC9, 0xA3, 0x92, 0x14, 0x0A};
 
 struct esp_now_message
 {
-  char text[32];
-  int value;
-  bool flag;
+  double value;
 };
 
 esp_now_message message_content;
@@ -50,9 +48,7 @@ void setup()
 
 void loop()
 {
-  strcpy(message_content.text, "Inzynier domu");
-  message_content.value = 13;
-  message_content.flag = true;
+  message_content.value = 13.0;
 
   esp_err_t result = esp_now_send(receiver_address, (uint8_t*)&message_content, msg_size);
 
