@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <Adafruit_SSD1306.h>
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
@@ -17,19 +19,9 @@ struct msg_measurement
   double value;
 };
 
-const uint8_t pin_rst = 9; // Pin RST - D3
-const uint8_t pin_ss = 10; // Pin SS (CS) - D8
-const uint8_t screen_width = 128;
-const uint8_t screen_height = 64;
+Adafruit_SSD1306 display(config::screen_width, config::screen_height, &Wire, -1);
 
-Adafruit_SSD1306 display(screen_width, screen_height, &Wire, -1);
-
-MFRC522 rfid(pin_ss, pin_rst);
-
-const byte my_card_id[4] = {0xE0, 0x64, 0xA7, 0x19};
-
-uint8_t slave_address_1[] = {0x3C, 0xE9, 0x0E, 0x7F, 0x30, 0x80};
-uint8_t slave_address_2[] = {0x3C, 0xE9, 0x0E, 0x7F, 0x30, 0x58};
+MFRC522 rfid(config::pin_ss, config::pin_rst);
 
 msg_measurement message_content;
 volatile bool value_changed;
@@ -59,12 +51,30 @@ bool is_card_my_card(byte uid[])
 {
   for (int i = 0; i < 4; i++)
   {
-    if (uid[i] != my_card_id[i])
+    if (uid[i] != config::my_card_id[i])
     {
       return false;
     }
   }
   return true;
+}
+
+void send_msg(const uint8_t* adress, const uint8_t* payload, int lenght)
+{
+  uint8_t _address[sizeof(adress)];
+  memcpy(_address, adress, sizeof(adress));
+  uint8_t _payload[sizeof(payload)];
+  memcpy(_payload, payload, sizeof(payload));
+  auto result = esp_now_send(_address, _payload, lenght);
+  Serial.print("msg status:");
+  Serial.println(result);
+}
+
+void connect(const uint8_t* adress)
+{
+  uint8_t _address[sizeof(adress)];
+  memcpy(_address, adress, sizeof(adress));
+  esp_now_add_peer(_address, ESP_NOW_ROLE_SLAVE, 1, NULL, 0);
 }
 
 void setup()
@@ -89,10 +99,8 @@ void setup()
   esp_now_set_self_role(ESP_NOW_ROLE_COMBO);
   esp_now_register_recv_cb(received_msg_callback);
 
-  // esp_now_register_send_cb(On_data_sent);
-
-  esp_now_add_peer(slave_address_1, ESP_NOW_ROLE_SLAVE, 1, NULL, 0);
-  esp_now_add_peer(slave_address_2, ESP_NOW_ROLE_SLAVE, 1, NULL, 0);
+  connect(config::slave_address_1);
+  connect(config::slave_address_2);
 
   SPI.begin();
   rfid.PCD_Init();
@@ -104,19 +112,13 @@ void loop()
   {
     if (is_card_my_card(rfid.uid.uidByte))
     {
-      msg_card_id msg;
-      msg.card_id[0] = 19; // TODO put whole id
-      Serial.println("Karta RFID o identyfikatorze E0 64 A7 19 została zbliżona do czytnika");
-      auto result = esp_now_send(slave_address_1, (uint8_t*)&msg, sizeof(msg_card_id));
-      Serial.print("msg status:");
-      Serial.println(result);
-      result = esp_now_send(slave_address_2, (uint8_t*)&msg, sizeof(msg_card_id));
-      Serial.print("msg status:");
-      Serial.println(result);
+      Serial.println("The correct card put on card scanner");
+      send_msg(config::slave_address_1, config::my_card_id, sizeof(config::my_card_id));
+      send_msg(config::slave_address_2, config::my_card_id, sizeof(config::my_card_id));
     }
     else
     {
-      Serial.println("Karta RFID o identyfikatorze innym niż E0 64 A7 19 została zbliżona do czytnika");
+      Serial.println("The incorrect card put on card scanner");
     }
   }
 
