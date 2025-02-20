@@ -35,9 +35,7 @@ void send_msg()
   msg_measurement msg;
   msg.value = bme.readTemperature();
   Serial.print(msg.value);
-  uint8_t _address[sizeof(config::master_address)];
-  memcpy(_address, config::master_address, sizeof(config::master_address));
-  esp_now_send(_address, (uint8_t*)&msg, sizeof(msg_measurement));
+  esp_now_send(peerInfo.peer_addr, (uint8_t*)&msg, sizeof(msg_measurement));
 }
 
 void received_msg_callback(const uint8_t* mac, const uint8_t* incomingData, int len)

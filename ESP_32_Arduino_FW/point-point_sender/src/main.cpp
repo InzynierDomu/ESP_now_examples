@@ -2,7 +2,6 @@
 #include <WiFi.h>
 #include <esp_now.h>
 
-// REPLACE WITH YOUR RECEIVER MAC Address
 const uint8_t receiver_address[] = {0xC8, 0xC9, 0xA3, 0x92, 0x14, 0x0A};
 
 struct esp_now_message
@@ -48,8 +47,7 @@ void setup()
 
 void loop()
 {
-  message_content.value = 13.0;
-
+  message_content.value = 13.0; //dummy value
   esp_err_t result = esp_now_send(receiver_address, (uint8_t*)&message_content, msg_size);
 
   if (result == ESP_OK)
