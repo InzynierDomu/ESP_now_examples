@@ -8,7 +8,6 @@
 #include <Wire.h>
 #include <espnow.h>
 
-
 struct msg_card_id
 {
   uint8_t card_id[4];

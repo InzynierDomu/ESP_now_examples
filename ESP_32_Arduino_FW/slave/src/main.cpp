@@ -1,9 +1,12 @@
+#include "config.h"
+
 #include <Adafruit_BME280.h>
 #include <Adafruit_Sensor.h>
 #include <Arduino.h>
 #include <WiFi.h>
 #include <esp_now.h>
 #include <stdint.h>
+
 
 struct msg_card_id
 {
@@ -16,8 +19,6 @@ struct msg_measurement
 };
 
 esp_now_peer_info_t peerInfo;
-uint8_t master_address[] = {0xC8, 0xC9, 0xA3, 0x92, 0x14, 0x0A};
-// C8:C9:A3:92:14
 
 bool led_status = false;
 long timer = 0;
@@ -34,7 +35,9 @@ void send_msg()
   msg_measurement msg;
   msg.value = bme.readTemperature();
   Serial.print(msg.value);
-  esp_now_send(master_address, (uint8_t*)&msg, sizeof(msg_measurement));
+  uint8_t _address[sizeof(config::master_address)];
+  memcpy(_address, config::master_address, sizeof(config::master_address));
+  esp_now_send(_address, (uint8_t*)&msg, sizeof(msg_measurement));
 }
 
 void received_msg_callback(const uint8_t* mac, const uint8_t* incomingData, int len)
@@ -65,14 +68,14 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
   Wire.begin(23, 19);
-  if(bme.begin(0x76, &Wire))
+  if (bme.begin(0x76, &Wire))
   {
-    Serial.println("bme dziala");
-  }  
+    Serial.println("BME280 working ok");
+  }
 
   esp_now_register_recv_cb(received_msg_callback);
 
-  memcpy(peerInfo.peer_addr, master_address, 6);
+  memcpy(peerInfo.peer_addr, config::master_address, sizeof(config::master_address));
   peerInfo.channel = 0;
   peerInfo.encrypt = false;
 
