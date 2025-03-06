@@ -25,6 +25,9 @@ MFRC522 rfid(config::pin_ss, config::pin_rst);
 msg_measurement message_content;
 volatile bool value_changed;
 
+unsigned long last_card_time = 0;
+const unsigned long card_time_threshold = 5000;
+
 void On_data_sent(uint8_t* mac_addr, uint8_t status)
 {
   char macStr[18];
@@ -33,7 +36,14 @@ void On_data_sent(uint8_t* mac_addr, uint8_t status)
       macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x", mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
   Serial.print(macStr);
   Serial.print(" send status:\t");
-  Serial.println(status == 0 ? "Delivery Success" : "Delivery Fail");
+  if (status)
+  {
+    Serial.println("Delivery Fail");
+  }
+  else
+  {
+    Serial.println("Delivery Success");
+  }
 }
 
 void received_msg_callback(uint8_t* mac, uint8_t* incomingData, uint8_t len)
@@ -58,15 +68,12 @@ bool is_card_my_card(byte uid[])
   return true;
 }
 
-void send_msg(const uint8_t* adress, const uint8_t* payload, int lenght)
+void send_msg(const uint8_t* adress, uint8_t* payload, int lenght)
 {
-  uint8_t _address[sizeof(adress)];
-  memcpy(_address, adress, sizeof(adress));
-  uint8_t _payload[sizeof(payload)];
-  memcpy(_payload, payload, sizeof(payload));
-  auto result = esp_now_send(_address, _payload, lenght);
-  Serial.print("msg status:");
-  Serial.println(result);
+  uint8_t _address[6];
+  memcpy(_address, adress, 6);
+  auto result = esp_now_send(_address, payload, lenght);
+  Serial.println(result == 0 ? "Delivery Success" : "Delivery Fail");
 }
 
 void connect(const uint8_t* adress)
@@ -84,6 +91,8 @@ void setup()
   display.clearDisplay();
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.print("testing");
   display.display();
 
   value_changed = false;
@@ -109,15 +118,19 @@ void loop()
 {
   if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial())
   {
-    if (is_card_my_card(rfid.uid.uidByte))
+    if (millis() - last_card_time >= card_time_threshold)
     {
-      Serial.println("The correct card put on card scanner");
-      send_msg(config::slave_address_1, config::my_card_id, sizeof(config::my_card_id));
-      send_msg(config::slave_address_2, config::my_card_id, sizeof(config::my_card_id));
-    }
-    else
-    {
-      Serial.println("The incorrect card put on card scanner");
+      if (is_card_my_card(rfid.uid.uidByte))
+      {
+        Serial.println("The correct card put on card scanner");
+        send_msg(config::slave_address_1, rfid.uid.uidByte, rfid.uid.size);
+        send_msg(config::slave_address_2, rfid.uid.uidByte, rfid.uid.size);
+      }
+      else
+      {
+        Serial.println("The incorrect card put on card scanner");
+      }
+      last_card_time = millis();
     }
   }
 

@@ -11,6 +11,7 @@ const uint8_t slave_address_2[] = {0x3C, 0xE9, 0x0E, 0x7F, 0x30, 0x58};
 
 const uint8_t pin_rst = 9;
 const uint8_t pin_ss = 10;
+
 const uint8_t screen_width = 128;
 const uint8_t screen_height = 64;
 } // namespace config

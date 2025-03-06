@@ -32,6 +32,7 @@ volatile bool msg_recived;
 
 void send_msg()
 {
+  Serial.print("msg sending");
   msg_measurement msg;
   msg.value = bme.readTemperature();
   Serial.print(msg.value);
@@ -40,11 +41,15 @@ void send_msg()
 
 void received_msg_callback(const uint8_t* mac, const uint8_t* incomingData, int len)
 {
+  Serial.print("msg received");
   memcpy(&message_content, incomingData, sizeof(message_content));
   Serial.print("Bytes received: ");
   Serial.println(len);
-  Serial.print("tag rfid: ");
-  Serial.println(message_content.card_id[0]);
+  Serial.println("tag rfid: ");
+  for (size_t i = 0; i < 4; i++)
+  {
+    Serial.println(message_content.card_id[i]);
+  }
   timer = millis();
   led_status = true;
   digitalWrite(LED_BUILTIN, HIGH);
@@ -54,23 +59,29 @@ void received_msg_callback(const uint8_t* mac, const uint8_t* incomingData, int 
 void setup()
 {
   Serial.begin(115200);
+  delay(1000);
+  while (!Serial)
+  {}
+  Serial.println("serial ready");
+
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+  Wire.begin();
+  if (bme.begin(0x76, &Wire))
+  {
+    Serial.println("BME280 working ok");
+  }
+  else
+  {
+    Serial.println("BME280 error");
+  }
 
   WiFi.mode(WIFI_STA);
 
   if (esp_now_init() != ESP_OK)
   {
     Serial.println("Error initializing ESP-NOW");
-    return;
   }
-
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
-  Wire.begin(23, 19);
-  if (bme.begin(0x76, &Wire))
-  {
-    Serial.println("BME280 working ok");
-  }
-
   esp_now_register_recv_cb(received_msg_callback);
 
   memcpy(peerInfo.peer_addr, config::master_address, sizeof(config::master_address));
@@ -80,7 +91,6 @@ void setup()
   if (esp_now_add_peer(&peerInfo) != ESP_OK)
   {
     Serial.println("Failed to add peer");
-    return;
   }
 }
 
