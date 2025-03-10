@@ -2,7 +2,7 @@
 #include <WiFi.h>
 #include <esp_now.h>
 
-const uint8_t receiver_address[] = {0x3C, 0xE9, 0x0E, 0x7F, 0x30, 0x58};
+const uint8_t receiver_address[] = {0xC8, 0xC9, 0xA3, 0x92, 0x14, 0x0A};
 
 struct esp_now_message
 {
@@ -58,5 +58,5 @@ void loop()
   {
     Serial.println("Error sending the data");
   }
-  delay(1000);
+  delay(2000);
 }

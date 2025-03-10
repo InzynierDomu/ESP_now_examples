@@ -4,28 +4,25 @@
 
 struct esp_now_message
 {
-  double value;
+  char text[32];
+  int value;
+  bool flag;
 };
 
 esp_now_message message_content;
-
-bool led_status = false;
-
-void toggle_led()
-{
-  digitalWrite(LED_BUILTIN, led_status ? HIGH : LOW);
-  led_status = !led_status;
-}
 
 void print_received_msg(const uint8_t* mac, const uint8_t* incoming_data, int len)
 {
   memcpy(&message_content, incoming_data, sizeof(message_content));
   Serial.print("Bytes received: ");
   Serial.println(len);
+  Serial.print("text: ");
+  Serial.println(message_content.text);
   Serial.print("value: ");
   Serial.println(message_content.value);
+  Serial.print("flag: ");
+  Serial.println(message_content.flag);
   Serial.println("-----------");
-  toggle_led();
 }
 
 void setup()
@@ -41,9 +38,6 @@ void setup()
   }
 
   esp_now_register_recv_cb(print_received_msg);
-
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
 }
 
 void loop() {}

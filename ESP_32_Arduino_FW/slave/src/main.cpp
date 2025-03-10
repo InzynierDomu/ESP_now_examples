@@ -30,18 +30,25 @@ Adafruit_BME280 bme;
 
 volatile bool msg_recived;
 
+uint8_t master_address[6];
+
 void send_msg()
 {
   Serial.print("msg sending");
+  for (size_t i = 0; i < 6; i++)
+  {
+    Serial.println(master_address[i]);
+  }
   msg_measurement msg;
   msg.value = bme.readTemperature();
   Serial.print(msg.value);
-  esp_now_send(peerInfo.peer_addr, (uint8_t*)&msg, sizeof(msg_measurement));
+  esp_now_send(master_address, (uint8_t*)&msg, sizeof(msg_measurement));
 }
 
 void received_msg_callback(const uint8_t* mac, const uint8_t* incomingData, int len)
 {
   Serial.print("msg received");
+  memcpy(master_address, mac, 6);
   memcpy(&message_content, incomingData, sizeof(message_content));
   Serial.print("Bytes received: ");
   Serial.println(len);
@@ -60,8 +67,6 @@ void setup()
 {
   Serial.begin(115200);
   delay(1000);
-  while (!Serial)
-  {}
   Serial.println("serial ready");
 
   pinMode(LED_BUILTIN, OUTPUT);
@@ -84,14 +89,14 @@ void setup()
   }
   esp_now_register_recv_cb(received_msg_callback);
 
-  memcpy(peerInfo.peer_addr, config::master_address, sizeof(config::master_address));
-  peerInfo.channel = 0;
-  peerInfo.encrypt = false;
+  // memcpy(peerInfo.peer_addr, config::master_address, sizeof(config::master_address));
+  // peerInfo.channel = 0;
+  // peerInfo.encrypt = false;
 
-  if (esp_now_add_peer(&peerInfo) != ESP_OK)
-  {
-    Serial.println("Failed to add peer");
-  }
+  // if (esp_now_add_peer(&peerInfo) != ESP_OK)
+  // {
+  //   Serial.println("Failed to add peer");
+  // }
 }
 
 void loop()
