@@ -1,12 +1,14 @@
 #include <Arduino.h>
+#ifdef ESP8266
+#include <ESP8266WiFi.h>
+#elif ESP32
 #include <WiFi.h>
-#include <esp_now.h>
+#endif
+#include "ESPNowW.h"
 
 struct esp_now_message
 {
-  char text[32];
-  int value;
-  bool flag;
+  double value;
 };
 
 esp_now_message message_content;
@@ -16,14 +18,11 @@ void print_received_msg(const uint8_t* mac, const uint8_t* incoming_data, int le
   memcpy(&message_content, incoming_data, sizeof(message_content));
   Serial.print("Bytes received: ");
   Serial.println(len);
-  Serial.print("text: ");
-  Serial.println(message_content.text);
   Serial.print("value: ");
   Serial.println(message_content.value);
-  Serial.print("flag: ");
-  Serial.println(message_content.flag);
   Serial.println("-----------");
 }
+
 
 void setup()
 {
