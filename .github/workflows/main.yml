@@ -71,4 +71,4 @@ jobs:
         run: pio run -e esp12e -d ./Wrapper/point-point_sender
 
       - name: Run PlatformIO_server_32
-        run: pio run -e denky32 -d ./web_server
+        run: pio run -e denky32 -d ./ESP_32_Arduino_FW/web_server

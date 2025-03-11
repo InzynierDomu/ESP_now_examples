@@ -13,6 +13,23 @@ This repository contains a set of simple projects that demonstrate how to use ES
 </div>
 
 ## Examples list
-* get_mac - To pair boards and send point-to-point messages, you will need the MAC addresses of your boards.
-* point-point_sender - send message via esp now
+### Framework Arduino
+* get_mac - To pair boards and send messages to specific boards, you will need the MAC addresses of this boards.
+#### ESP8266
+* point-point_sender - send message via esp now to reciver
 * point-point_receiver - receive message via esp now
+* Central - reads rfid tag, sends message to specific boards ESP32/slave example, receives temperature measurements and displays them
+* Central_broadcast - reads rfid tag, sends broadcast message(to all), receives temperature measurements and displays them
+* Central_to_server - reads rfid tag, message to specific boards ESP32/web_server example
+#### ESP32
+* point-point_sender - send message via esp now to reciver
+* point-point_receiver - receive message via esp now
+* slave - Receives a message from the ESP8266/Central and replies with a temperature measurement
+* web_server - Receives a message from the ESP8266/Central and shows incoming rfid code on web server
+#### Wrapper
+Versions with a wrapper that works for both ESP8266 and ESP32
+* point-point_sender - send message via esp now to reciver
+* point-point_receiver - receive message via esp now
+### ESP IDF 
+TBD
+  
