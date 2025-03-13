@@ -42,6 +42,21 @@ void send_msg()
   msg_measurement msg;
   msg.value = bme.readTemperature();
   Serial.print(msg.value);
+  if (!esp_now_is_peer_exist(master_address))
+  {
+    Serial.println("add peer");
+    esp_now_peer_info_t peerInfo;
+    memcpy(peerInfo.peer_addr, master_address, 6);
+    peerInfo.channel = 0;
+    peerInfo.encrypt = false;
+
+    if (esp_now_add_peer(&peerInfo) != ESP_OK)
+    {
+      Serial.println("Failed to add peer");
+      return;
+    }
+  }
+
   esp_now_send(master_address, (uint8_t*)&msg, sizeof(msg_measurement));
 }
 
