@@ -43,11 +43,17 @@ jobs:
       - name: Run PlatformIO_central_12e
         run: pio run -e esp12e -d ./ESP_8266_Arduino_FW/Central
 
-      - name: Run PlatformIO_central_8266
+      - name: Run PlatformIO_central_broadcast_8266
         run: pio run -e esp12e -d ./ESP_8266_Arduino_FW/Central_broadcast
 
-      - name: Run PlatformIO_central_8266
+      - name: Run PlatformIO_central_to_server_8266
         run: pio run -e esp12e -d ./ESP_8266_Arduino_FW/Central_to_server
+
+      - name: Run PlatformIO_p_p_sender_8266
+        run: pio run -e esp12e -d ./ESP_8266_Arduino_FW/point-point_sender
+
+      - name: Run PlatformIO_p_p_recivevr_8266
+        run: pio run -e esp12e -d ./ESP_8266_Arduino_FW/point-point_receiver
 
       - name: Run PlatformIO_slave_32
         run: pio run -e lolin32_lite -d ./ESP_32_Arduino_FW/slave
