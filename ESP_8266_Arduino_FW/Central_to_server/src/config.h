@@ -6,9 +6,9 @@ namespace config
 {
 const uint8_t my_card_id[4] = {0xE0, 0x64, 0xA7, 0x19};
 
-const uint8_t slave_address[] = {0x3C, 0xE9, 0x0E, 0x7F, 0x30, 0x80};
+const uint8_t slave_address[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-const char* ssid = "ssid";
+const char* ssid = "Jeremek_NET";
 
 const uint8_t pin_rst = 9;
 const uint8_t pin_ss = 10;

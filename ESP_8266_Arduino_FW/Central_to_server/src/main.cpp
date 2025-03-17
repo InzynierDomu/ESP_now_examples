@@ -83,6 +83,33 @@ void connect(const uint8_t* adress)
   esp_now_add_peer(_address, ESP_NOW_ROLE_SLAVE, 1, NULL, 0);
 }
 
+int get_wifi_channel()
+{
+  int networksFound = WiFi.scanNetworks();
+
+  if (networksFound == 0)
+  {
+    Serial.println("Cannot find Wi-Fi");
+    return -1;
+  }
+  else
+  {
+    for (int i = 0; i < networksFound; i++)
+    {
+      if (WiFi.SSID(i) == config::ssid)
+      {
+        Serial.print("ssid '");
+        Serial.print(config::ssid);
+        Serial.print("' on channel: ");
+        Serial.println(WiFi.channel(i));
+        return WiFi.channel(i);
+      }
+    }
+    Serial.println("Cannot find specific Wi-Fi");
+    return -1;
+  }
+}
+
 void setup()
 {
   Serial.begin(115200);
@@ -99,7 +126,14 @@ void setup()
 
   WiFi.mode(WIFI_OFF);
   delay(100);
-  wifi_set_channel(5);
+  if (config::use_detecting_wifi)
+  {
+    wifi_set_channel(get_wifi_channel());
+  }
+  else
+  {
+    wifi_set_channel(config::wifi_channel);
+  }
 
   WiFi.mode(WIFI_STA);
 

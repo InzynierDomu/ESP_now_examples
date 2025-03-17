@@ -35,8 +35,9 @@ void send_msg()
   Serial.print("msg sending");
   for (size_t i = 0; i < 6; i++)
   {
-    Serial.println(master_address[i]);
+    Serial.printf("%02X:", master_address[i]);
   }
+  Serial.println();
   msg_measurement msg;
   msg.value = bme.readTemperature();
   Serial.print(msg.value);
