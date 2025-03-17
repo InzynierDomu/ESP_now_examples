@@ -18,8 +18,6 @@ struct msg_measurement
   double value;
 };
 
-esp_now_peer_info_t peerInfo;
-
 bool led_status = false;
 long timer = 0;
 const uint32_t m_on_led_time = 2000; ///< checking interval
@@ -103,15 +101,6 @@ void setup()
     Serial.println("Error initializing ESP-NOW");
   }
   esp_now_register_recv_cb(received_msg_callback);
-
-  // memcpy(peerInfo.peer_addr, config::master_address, sizeof(config::master_address));
-  // peerInfo.channel = 0;
-  // peerInfo.encrypt = false;
-
-  // if (esp_now_add_peer(&peerInfo) != ESP_OK)
-  // {
-  //   Serial.println("Failed to add peer");
-  // }
 }
 
 void loop()

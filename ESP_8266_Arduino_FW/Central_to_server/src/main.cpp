@@ -111,8 +111,7 @@ void setup()
   esp_now_set_self_role(ESP_NOW_ROLE_COMBO);
   esp_now_register_recv_cb(received_msg_callback);
 
-  connect(config::broadcast_address);
-  // connect(config::slave_address_2);
+  connect(config::slave_address);
 
   SPI.begin();
   rfid.PCD_Init();
@@ -127,8 +126,7 @@ void loop()
       if (is_card_my_card(rfid.uid.uidByte))
       {
         Serial.println("The correct card put on card scanner");
-        send_msg(config::broadcast_address, rfid.uid.uidByte, rfid.uid.size);
-        // send_msg(config::slave_address_2, rfid.uid.uidByte, rfid.uid.size);
+        send_msg(config::slave_address, rfid.uid.uidByte, rfid.uid.size);
       }
       else
       {

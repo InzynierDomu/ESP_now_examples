@@ -1,16 +1,14 @@
+#include "config.h"
+
 #include <WebServer.h>
 #include <WiFi.h>
 #include <esp_now.h>
+
 
 struct msg_card_id
 {
   uint8_t card_id[4];
 };
-
-
-// Dane sieci WiFi (podaj swoją nazwę i hasło)
-const char* ssid = "Jeremek_NET";
-const char* password = "Kotek_9193";
 
 // Tworzenie serwera HTTP
 WebServer server(80);
@@ -81,8 +79,8 @@ void setup()
 {
   Serial.begin(115200);
 
-  WiFi.mode(WIFI_STA);// Przełącz na tryb stacji (klienta)
-  WiFi.begin(ssid, password);
+  WiFi.mode(WIFI_STA); // Przełącz na tryb stacji (klienta)
+  WiFi.begin(config::ssid, config::password);
   Serial.print("Łączenie z WiFi...");
   while (WiFi.status() != WL_CONNECTED)
   {

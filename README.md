@@ -4,6 +4,7 @@
 <a href="https://discord.gg/KmW6mHdg">![Discord](https://img.shields.io/discord/815929748882587688?logo=discord&logoColor=green&style=flat-square)</a>
 ![GitHub](https://img.shields.io/github/license/InzynierDomu/ESP_now_examples?style=flat-square)
 
+## About
 This repository contains a set of simple projects that demonstrate how to use ESP-NOW. The projects are designed to be easy to understand and follow, even for beginners. The projects can be used as a starting point for learning about ESP-NOW, or they can be modified to meet your specific needs.
 
 <div align="center">
@@ -33,3 +34,30 @@ Versions with a wrapper that works for both ESP8266 and ESP32
 ### ESP IDF 
 TBD
   
+## Schem
+### Slave
+| BME280      | ESP32 Lolin      |
+|----------------|----------------|
+| GND  | GND  |
+| VCC  | 3.3V  |
+| SCL  | 23  |
+| SDA  | 19 |
+
+### Central
+
+| SSD1306 (OLED)    | EVW-008 (ESP8266)     |
+|----------------|----------------|
+| GND  | GND  |
+| VCC  | 3.3V  |
+| SCL  | SCL (GPIO5) |
+| SDA  | SDA (GPIO4) |
+
+| MFRC522 (RFID)     | EVW-008 (ESP8266)     |
+|----------------|----------------|
+| GND  | GND  |
+| VCC  | 3.3V  |
+| SCK  | CLK |
+| SDA  | IO10 (GPIO10) |
+| MOSI  | MOSI |
+| MISO  | MISO |
+| RST  | IO9 (GPIO9) |

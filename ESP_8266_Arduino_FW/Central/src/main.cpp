@@ -111,6 +111,7 @@ void setup()
   esp_now_register_recv_cb(received_msg_callback);
 
   connect(config::slave_address_1);
+  connect(config::slave_address_2);
 
   SPI.begin();
   rfid.PCD_Init();
@@ -126,6 +127,7 @@ void loop()
       {
         Serial.println("The correct card put on card scanner");
         send_msg(config::slave_address_1, rfid.uid.uidByte, rfid.uid.size);
+        send_msg(config::slave_address_2, rfid.uid.uidByte, rfid.uid.size);
       }
       else
       {
