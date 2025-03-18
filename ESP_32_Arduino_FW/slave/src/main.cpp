@@ -1,5 +1,3 @@
-#include "config.h"
-
 #include <Adafruit_BME280.h>
 #include <Adafruit_Sensor.h>
 #include <Arduino.h>
