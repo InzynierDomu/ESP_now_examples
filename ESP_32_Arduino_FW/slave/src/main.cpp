@@ -18,7 +18,7 @@ struct msg_measurement
 
 bool led_status = false;
 long timer = 0;
-const uint32_t m_on_led_time = 2000; ///< checking interval
+const uint32_t m_on_led_time = 2000;
 
 msg_card_id message_content;
 

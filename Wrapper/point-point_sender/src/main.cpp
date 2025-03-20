@@ -7,7 +7,7 @@
 #endif
 #include "ESPNowW.h"
 
-uint8_t receiver_mac[] = {0x50, 0x02, 0x91, 0xD5, 0xF7, 0xC3};
+uint8_t receiver_mac[] = {0x3C, 0xE9, 0x0E, 0x7F, 0x30, 0x58};
 
 void setup()
 {
@@ -25,8 +25,8 @@ void setup()
 
 void loop()
 {
-  uint8_t a = 8; // dummy value
+  uint8_t msg = 8; // dummy value
   delay(2000);
-  ESPNow.send_message(receiver_mac, &a, 1);
-  Serial.println(a++);
+  ESPNow.send_message(receiver_mac, &msg, 1);
+  Serial.println(msg++);
 }

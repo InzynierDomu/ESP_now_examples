@@ -61,3 +61,13 @@ TBD
 | MOSI  | MOSI |
 | MISO  | MISO |
 | RST  | IO9 (GPIO9) |
+
+## Manual
+To change mac addresses, network names etc. use the config files in the project folders.
+
+## IDE
+The project is prepared for the Platform IO environment. A video on how to install such an environment can be watched on this [video PL](https://youtu.be/Em9NuebT2Kc).
+<br><br>
+
+Formatting is done using clang-format. The description of the tool configuration is in the [video PL](https://youtu.be/xxuaOG0WjIE).
+<br><br>

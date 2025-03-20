@@ -16,7 +16,6 @@ void print_received_msg(uint8_t* mac, uint8_t* incoming_data, uint8_t len)
   Serial.println(len);
   Serial.print("value: ");
   Serial.println(message_content.value);
-  Serial.println("-----------");
 }
 
 void setup()

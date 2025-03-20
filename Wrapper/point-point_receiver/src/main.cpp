@@ -25,7 +25,6 @@ void print_received_msg(const uint8_t* mac, const uint8_t* incoming_data, int le
   Serial.println(len);
   Serial.print("value: ");
   Serial.println(message_content.value);
-  Serial.println("-----------");
 }
 
 void setup()
@@ -33,7 +32,7 @@ void setup()
   Serial.begin(115200);
 
 #ifdef ESP8266
-  WiFi.mode(WIFI_STA); // MUST NOT BE WIFI_MODE_NULL
+  WiFi.mode(WIFI_STA);
 #elif ESP32
   WiFi.mode(WIFI_MODE_STA);
 #endif

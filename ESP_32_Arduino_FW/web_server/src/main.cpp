@@ -11,7 +11,7 @@ struct msg_card_id
 
 WebServer server(80);
 
-String lastMessage = "Brak danych";
+String lastMessage = "No data";
 
 msg_card_id message_content;
 
